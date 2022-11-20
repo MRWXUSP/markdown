@@ -215,3 +215,71 @@ s :=[] int {1,2,3}
 s := arr[:] //s是arr的引用
 s := arr[a:b] // 从数组arr下标a-b创建一个新切片,不输入a或b时即从最开始到b或a到最后一个元素
 s := []int //空切片
+```
+>4.切片函数
+
+####len()函数与cap()函数
+
+切片的具体长度可以用len()函数获取；
+切片的容量大小可以用cap()函数获取；
+```go
+package main
+
+import "fmt"
+
+func main() {
+   var numbers = make([]int,3,5)
+
+   printSlice(numbers)
+}
+
+func printSlice(x []int){
+   fmt.Printf("len=%d cap=%d slice=%v\n",len(x),cap(x),x)
+}
+//结果为len=3 cap=5 slice=[0 0 0];
+```
+####append()与copy()函数
+
+切片增大容量时，必须创建一个新的切片，再复制过来原切片内容，这也是切片空间浪费的特点；
+
+ ```go
+ package main
+
+import "fmt"
+
+func main() {
+   var numbers []int
+   printSlice(numbers)
+
+   /* 允许追加空切片 */
+   numbers = append(numbers, 0)
+   printSlice(numbers)
+
+   /* 向切片添加一个元素 */
+   numbers = append(numbers, 1)
+   printSlice(numbers)
+
+   /* 同时添加多个元素 */
+   numbers = append(numbers, 2,3,4)
+   printSlice(numbers)
+
+   /* 创建切片 numbers1 是之前切片的两倍容量*/
+   numbers1 := make([]int, len(numbers), (cap(numbers))*2)
+
+   /* 拷贝 numbers 的内容到 numbers1 */
+   copy(numbers1,numbers)
+   printSlice(numbers1)  
+}
+
+func printSlice(x []int){
+   fmt.Printf("len=%d cap=%d slice=%v\n",len(x),cap(x),x)
+}
+/* 
+   len=0 cap=0 slice=[]
+   len=1 cap=1 slice=[0]
+   len=2 cap=2 slice=[0 1]
+   len=5 cap=6 slice=[0 1 2 3 4]
+   len=5 cap=12 slice=[0 1 2 3 4]
+*/
+
+```
